@@ -1,20 +1,20 @@
-#ifndef JL_CONNECT6JMSGPARSER_H
-#define JL_CONNECT6JMSGPARSER_H
+#ifndef JL_NCTU6PARSER_H
+#define JL_NCTU6PARSER_H
 
 #include <map>
-#include "BaseJMsgParser.h"
+#include "GameParser.h"
 #include "UctParserInterface.h"
 #include "Connect6Move.h"
 
 namespace joblevel 
 {
 
-class Connect6JMsgParser
-	: public BaseJMsgParser,
+class Nctu6Parser
+	: public GameParser,
 	  public UctParserInterface
 {
 public:
-	Connect6JMsgParser();
+	Nctu6Parser();
 	BaseMovePtr getMove(const std::string& sResult) const;
 	BfsData::WinningStatus getWinningStatus(const std::string& sResult) const;
 	bool getStopExpanding(const std::string& sResult) const;

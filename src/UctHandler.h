@@ -1,20 +1,20 @@
 #ifndef JL_UCTHANDLER_H
 #define JL_UCTHANDLER_H
 
-#include "BaseBfsHandler.h"
+#include "BfsHandler.h"
 
 namespace joblevel
 {
 
 class UctParserInterface;
 
-class UctHandler : public BaseBfsHandler
+class UctHandler : public BfsHandler
 {
 public:
 	UctHandler();
 	virtual ~UctHandler() {}
 	NodePtr selectBestChild(NodePtr pParent);
-	bool setBaseJMsgParser(BaseJMsgParser* pBaseJMsgParser);
+	bool setBaseJMsgParser(GameParser* pBaseJMsgParser);
 
 protected:
 	void initializeSpecificData(NodePtr pNode);

@@ -1,9 +1,9 @@
-#include "BaseJMsgParser.h"
+#include "GameParser.h"
 
 namespace joblevel
 {
 
-std::string BaseJMsgParser::getStringFromResult(const std::string& sTag, 
+std::string GameParser::getStringFromResult(const std::string& sTag, 
 	const std::string& sResult) const
 {
 	// get position after sTag and a '['

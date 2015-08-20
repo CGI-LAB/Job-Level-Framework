@@ -1,16 +1,16 @@
-#include "BaseBfsAlgorithm.h"
+#include "CommonBfJlModules.h"
 #include <vector>
 #include <sstream>
 #include <cassert>
 #include <fstream>
 #include "JobLevelConfigure.h"
-#include "BaseBfsHandler.h"
-#include "BaseGameHandler.h"
+#include "BfsHandler.h"
+#include "GameHandler.h"
 
 namespace joblevel
 {
 
-BaseBfsAlgorithm::BaseBfsAlgorithm()
+CommonBfJlModules::CommonBfJlModules()
 	: BfsInterface(),
 	  m_pBfsHandler(NULL),
 	  m_pGameHandler(NULL),
@@ -24,28 +24,28 @@ BaseBfsAlgorithm::BaseBfsAlgorithm()
 	}
 }
 
-BaseBfsHandler* BaseBfsAlgorithm::getBfsHandler() const
+BfsHandler* CommonBfJlModules::getBfsHandler() const
 {
 	assert(m_pBfsHandler != NULL);
 	return m_pBfsHandler;
 }
 
-void BaseBfsAlgorithm::setBfsHandler(BaseBfsHandler* pBfsHandler)
+void CommonBfJlModules::setBfsHandler(BfsHandler* pBfsHandler)
 {
 	m_pBfsHandler = pBfsHandler;
 }
 
-BaseGameHandler* BaseBfsAlgorithm::getGameHandler() const
+GameHandler* CommonBfJlModules::getGameHandler() const
 {
 	return m_pGameHandler;
 }
 
-void BaseBfsAlgorithm::setGameHandler(BaseGameHandler* pGameHandler)
+void CommonBfJlModules::setGameHandler(GameHandler* pGameHandler)
 {
 	m_pGameHandler = pGameHandler;
 }
 
-bool BaseBfsAlgorithm::initialize(NodePtr pNode)
+bool CommonBfJlModules::initialize(NodePtr pNode)
 {
 	assert(m_pBfsHandler != NULL);
 	assert(m_pGameHandler != NULL);
@@ -64,7 +64,7 @@ bool BaseBfsAlgorithm::initialize(NodePtr pNode)
 	return true;
 }
 
-NodePtr BaseBfsAlgorithm::select()
+NodePtr CommonBfJlModules::select()
 {
 	if (shouldSelect() == false)
 		return nullptr;
@@ -89,12 +89,12 @@ NodePtr BaseBfsAlgorithm::select()
 	return pSelectedNode;
 }
 
-void BaseBfsAlgorithm::preUpdate(NodePtr pNode)
+void CommonBfJlModules::preUpdate(NodePtr pNode)
 {
 	update(pNode, true);
 }
 
-bool BaseBfsAlgorithm::dispatch(NodePtr pNode)
+bool CommonBfJlModules::dispatch(NodePtr pNode)
 {
 	assert(m_pBfsHandler != NULL);
 	assert(m_pGameHandler != NULL);
@@ -113,7 +113,7 @@ bool BaseBfsAlgorithm::dispatch(NodePtr pNode)
 
 	std::string sAppName = m_pGameHandler->getAppName();
 	std::string sAppVersion = m_pGameHandler->getAppVersion();
-	std::string sArgument = m_pGameHandler->getArgument(pNode);
+	std::string sArgument = m_pGameHandler->prepareJobCommands(pNode);
 
 	int iJId = submitJob(pNode, sAppName, sAppVersion, sArgument);
 
@@ -132,7 +132,7 @@ bool BaseBfsAlgorithm::dispatch(NodePtr pNode)
 	return true;
 }
 
-NodePtr BaseBfsAlgorithm::handleJobResult(int iJId, NodePtr pNode, const std::string& sResult)
+NodePtr CommonBfJlModules::handleResult(int iJId, NodePtr pNode, const std::string& sResult)
 {
 	m_nDoingJobs--;
 	assert(m_pBfsHandler != NULL);
@@ -170,12 +170,12 @@ NodePtr BaseBfsAlgorithm::handleJobResult(int iJId, NodePtr pNode, const std::st
 	return pNewNode;
 }
 
-void BaseBfsAlgorithm::update(NodePtr pNode)
+void CommonBfJlModules::update(NodePtr pNode)
 {
 	update(pNode, false);
 }
 
-bool BaseBfsAlgorithm::isCompleted()
+bool CommonBfJlModules::isCompleted()
 {
 	// If root is proved or total jobs hit node limit, algorithm is completed.
 	assert(m_pBfsHandler != NULL);
@@ -185,19 +185,19 @@ bool BaseBfsAlgorithm::isCompleted()
 	return false;
 }
 
-void BaseBfsAlgorithm::finalize()
+void CommonBfJlModules::finalize()
 {
 	std::cout << "Job level Finished" << std::endl << "> " << std::flush;
 }
 
-bool BaseBfsAlgorithm::shouldSelect()
+bool CommonBfJlModules::shouldSelect()
 {
 	int nMaxRunningJobs = JobLevelConfigure::g_configure.nMaxRunningJobs;
 	return hasWaitingJob() == false && 
 		(m_nDoingJobs < nMaxRunningJobs || nMaxRunningJobs == 0);
 }
 
-void BaseBfsAlgorithm::update(NodePtr pLeaf, bool isPreUpdate)
+void CommonBfJlModules::update(NodePtr pLeaf, bool isPreUpdate)
 {
 	assert(m_pBfsHandler != NULL);
 	NodePtr pTraversedChild = pLeaf;
@@ -212,12 +212,12 @@ void BaseBfsAlgorithm::update(NodePtr pLeaf, bool isPreUpdate)
 		m_pBfsHandler->proveNodesRetrograde(pLeaf, *this);
 }
 
-void BaseBfsAlgorithm::generatePostponedSibling(NodePtr pNode)
+void CommonBfJlModules::generatePostponedSibling(NodePtr pNode)
 {
 	delayedExpand(pNode);
 }
 
-bool BaseBfsAlgorithm::delayedExpand(NodePtr pNode)
+bool CommonBfJlModules::delayedExpand(NodePtr pNode)
 {
 	assert(m_pBfsHandler != NULL);
 	if (pNode->isRoot())
@@ -233,7 +233,7 @@ bool BaseBfsAlgorithm::delayedExpand(NodePtr pNode)
 	return false;
 }
 
-void BaseBfsAlgorithm::restorePreUpdate(NodePtr pLeaf)
+void CommonBfJlModules::restorePreUpdate(NodePtr pLeaf)
 {
 	assert(m_pBfsHandler != NULL);
 	NodePtr pTraversedChild = pLeaf;

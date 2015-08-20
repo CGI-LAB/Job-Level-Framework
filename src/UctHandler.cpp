@@ -5,18 +5,18 @@
 #include "UctData.h"
 #include "BfsData.h"
 #include "JobLevelConfigure.h"
-#include "BaseJMsgParser.h"
+#include "GameParser.h"
 
 namespace joblevel
 {
 
 UctHandler::UctHandler()
-	: BaseBfsHandler(),
+	: BfsHandler(),
 	  m_pUctParserInterface(NULL)
 {
 }
 
-bool UctHandler::setBaseJMsgParser(BaseJMsgParser* pBaseJMsgParser)
+bool UctHandler::setBaseJMsgParser(GameParser* pBaseJMsgParser)
 {
 	m_pUctParserInterface = dynamic_cast<UctParserInterface*>(pBaseJMsgParser);
 	if (m_pUctParserInterface == NULL)

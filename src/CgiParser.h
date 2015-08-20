@@ -1,14 +1,14 @@
-#ifndef JL_GOJMSGPARSER_H
-#define JL_GOJMSGPARSER_H
+#ifndef JL_CGIPARSER_H
+#define JL_CGIPARSER_H
 
-#include "BaseJMsgParser.h"
+#include "GameParser.h"
 #include "UctParserInterface.h"
 
 namespace joblevel
 {
 
-class GoJMsgParser
-	: public BaseJMsgParser,
+class CgiParser
+	: public GameParser,
 	  public UctParserInterface
 {
 public:

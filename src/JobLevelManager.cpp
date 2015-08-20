@@ -1,11 +1,11 @@
 #include "JobLevelManager.h"
 #include <iostream>
 #include "JobLevelConfigure.h"
-#include "BaseBfsAlgorithm.h"
+#include "CommonBfJlModules.h"
 #include "UctHandler.h"
 #include "MiniMaxHandler.h"
-#include "GoHandler.h"
-#include "Connect6Handler.h"
+#include "CgiHandler.h"
+#include "Nctu6Handler.h"
 
 namespace joblevel
 {
@@ -16,15 +16,15 @@ void JobLevelManager::setupMap()
 {
 	JobLevelConfigure& cf = JobLevelConfigure::g_configure;
 	// register algorithms
-	m_algorithms[cf.sBfsAlgorithmType] = new BaseBfsAlgorithm;
+	m_algorithms[cf.sBfsAlgorithmType] = new CommonBfJlModules;
 
 	// register BFS handlers
 	m_bfsHandlers[cf.sUctHandlerType] = new UctHandler;
 	m_bfsHandlers[cf.sMiniMaxHandlerType] = new MiniMaxHandler;
 
 	// register Game handlers
-	m_gameHandlers[cf.sGoGameType] = new GoHandler;
-	m_gameHandlers[cf.sConnect6GameType] = new Connect6Handler;
+	m_gameHandlers[cf.sGoGameType] = new CgiHandler;
+	m_gameHandlers[cf.sConnect6GameType] = new Nctu6Handler;
 }
 
 AlgorithmInterface* JobLevelManager::getAlgorithm()
@@ -51,9 +51,9 @@ AlgorithmInterface* JobLevelManager::getAlgorithm()
 			std::cerr << sGameType << " doesn't support " << sBfsHandlerType << std::endl;
 			return NULL;
 		}
-		dynamic_cast<BaseBfsAlgorithm*>(m_algorithms[sAlgorithmType])
+		dynamic_cast<CommonBfJlModules*>(m_algorithms[sAlgorithmType])
 			->setBfsHandler(m_bfsHandlers[sBfsHandlerType]);
-		dynamic_cast<BaseBfsAlgorithm*>(m_algorithms[sAlgorithmType])
+		dynamic_cast<CommonBfJlModules*>(m_algorithms[sAlgorithmType])
 			->setGameHandler(m_gameHandlers[sGameType]);
 	}
 

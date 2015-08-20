@@ -1,17 +1,17 @@
-#include "Connect6JMsgParser.h"
+#include "Nctu6Parser.h"
 
 namespace joblevel 
 {
 
-Connect6JMsgParser::Connect6JMsgParser()
-	: BaseJMsgParser(),
+Nctu6Parser::Nctu6Parser()
+	: GameParser(),
 	  UctParserInterface(),
 	  m_winRateTable()
 {
 	initializeWinRateTable();
 }
 
-BaseMovePtr Connect6JMsgParser::getMove(const std::string& sResult) const
+BaseMovePtr Nctu6Parser::getMove(const std::string& sResult) const
 {
 	GoMove::PlayerColor color = getColor(sResult);
 	int n = sResult.find(";");
@@ -30,7 +30,7 @@ BaseMovePtr Connect6JMsgParser::getMove(const std::string& sResult) const
 	}
 }
 
-BfsData::WinningStatus Connect6JMsgParser::getWinningStatus(
+BfsData::WinningStatus Nctu6Parser::getWinningStatus(
 	const std::string& sResult) const
 {
 	// CWIN: 0 is UNKNOWN, 1 is player win, 2 is opponent win
@@ -43,12 +43,12 @@ BfsData::WinningStatus Connect6JMsgParser::getWinningStatus(
 		return BfsData::UNKNOWN;
 }
 
-bool Connect6JMsgParser::getStopExpanding(const std::string& sResult) const
+bool Nctu6Parser::getStopExpanding(const std::string& sResult) const
 {
 	return false;
 }
 
-double Connect6JMsgParser::getWinRate(const std::string& sResult) const
+double Nctu6Parser::getWinRate(const std::string& sResult) const
 {
 	GoMove::PlayerColor color = getColor(sResult);
 	std::string sStatus = getStringFromResult("C", sResult);
@@ -58,7 +58,7 @@ double Connect6JMsgParser::getWinRate(const std::string& sResult) const
 		return 1.0f - m_winRateTable[sStatus];
 }
 
-GoMove::PlayerColor Connect6JMsgParser::getColor(const std::string& sResult) const
+GoMove::PlayerColor Nctu6Parser::getColor(const std::string& sResult) const
 {
 	int n = sResult.find("AB_RESULT");
 	n = sResult.find(";", n);
@@ -67,7 +67,7 @@ GoMove::PlayerColor Connect6JMsgParser::getColor(const std::string& sResult) con
 	return color;
 }
 
-void Connect6JMsgParser::initializeWinRateTable()
+void Nctu6Parser::initializeWinRateTable()
 {
 	m_winRateTable["B:w"] = 1.00f;
 	m_winRateTable["B:a_w"] = 0.90f;

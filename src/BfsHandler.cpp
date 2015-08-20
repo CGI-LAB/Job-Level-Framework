@@ -1,48 +1,48 @@
-#include "BaseBfsHandler.h"
+#include "BfsHandler.h"
 #include <cassert>
 #include "BfsData.h"
 #include "JobLevelConfigure.h"
-#include "BaseBfsAlgorithm.h"
+#include "CommonBfJlModules.h"
 
 namespace joblevel
 {
 
-BaseBfsHandler::BaseBfsHandler()
+BfsHandler::BfsHandler()
 {
 }
 
-void BaseBfsHandler::initializeNode(NodePtr pNode)
+void BfsHandler::initializeNode(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	initializeSpecificData(pNode);
 }
 
-bool BaseBfsHandler::isProvenNode(NodePtr pNode)
+bool BfsHandler::isProvenNode(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	return nodeData.getWinningStatus() != BfsData::UNKNOWN;
 }
 
-bool BaseBfsHandler::isLastestGenerated(NodePtr pNode)
+bool BfsHandler::isLastestGenerated(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	assert(pNode->hasParent());
 	return nodeData.getSequenceOfGeneration() == pNode->getParent()->getChildrenSize();
 }
 
-bool BaseBfsHandler::isRunningJob(NodePtr pNode)
+bool BfsHandler::isRunningJob(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	return nodeData.isRunningJob();
 }
 
-bool BaseBfsHandler::isFlagged(NodePtr pNode)
+bool BfsHandler::isFlagged(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	return nodeData.isFlagged();
 }
 
-void BaseBfsHandler::setupBfsData(NodePtr pNode, const std::string& sResult)
+void BfsHandler::setupBfsData(NodePtr pNode, const std::string& sResult)
 {
 	BfsData::Accessor nodeData(pNode);
 	assert(pNode->hasParent());
@@ -50,7 +50,7 @@ void BaseBfsHandler::setupBfsData(NodePtr pNode, const std::string& sResult)
 	setupSpecificData(pNode, sResult);
 }
 
-void BaseBfsHandler::updateBfsData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate)
+void BfsHandler::updateBfsData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate)
 {
 	if (pChild->isRoot())
 		return;
@@ -66,7 +66,7 @@ void BaseBfsHandler::updateBfsData(NodePtr pChild, NodePtr pLeaf, bool isPreUpda
 	updateSpecificData(pChild, pLeaf, isPreUpdate);
 }
 
-void BaseBfsHandler::restoreUpdateBfsData(NodePtr pChild, NodePtr pLeaf)
+void BfsHandler::restoreUpdateBfsData(NodePtr pChild, NodePtr pLeaf)
 {
 	if (pChild->isRoot())
 		return;
@@ -79,13 +79,13 @@ void BaseBfsHandler::restoreUpdateBfsData(NodePtr pChild, NodePtr pLeaf)
 	restoreUpdateSpecificData(pChild, pLeaf);
 }
 
-void BaseBfsHandler::updateRunningJobFlag(NodePtr pNode, bool isRunningJob)
+void BfsHandler::updateRunningJobFlag(NodePtr pNode, bool isRunningJob)
 {
 	BfsData::Accessor nodeData(pNode);
 	nodeData.setRunningJob(isRunningJob);
 }
 
-void BaseBfsHandler::updateWithFlagPolicy(NodePtr pNode, bool isFlagged)
+void BfsHandler::updateWithFlagPolicy(NodePtr pNode, bool isFlagged)
 {
 	if (isFlagged)
 		updateFlaggedOn(pNode);
@@ -93,7 +93,7 @@ void BaseBfsHandler::updateWithFlagPolicy(NodePtr pNode, bool isFlagged)
 		updateFlaggedOff(pNode);
 }
 
-void BaseBfsHandler::updateFlaggedOn(NodePtr pNode)
+void BfsHandler::updateFlaggedOn(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	if (nodeData.isFlagged())
@@ -120,7 +120,7 @@ void BaseBfsHandler::updateFlaggedOn(NodePtr pNode)
 		updateFlaggedOn(pNode->getParent());
 }
 
-void BaseBfsHandler::updateFlaggedOff(NodePtr pNode)
+void BfsHandler::updateFlaggedOff(NodePtr pNode)
 {
 	BfsData::Accessor nodeData(pNode);
 	if (nodeData.isFlagged() == false)
@@ -148,7 +148,7 @@ void BaseBfsHandler::updateFlaggedOff(NodePtr pNode)
 	}
 }
 
-void BaseBfsHandler::proveNodesRetrograde(NodePtr pNode, BaseBfsAlgorithm& baseBfsAlgorithm)
+void BfsHandler::proveNodesRetrograde(NodePtr pNode, CommonBfJlModules& baseBfsAlgorithm)
 {
 	if (pNode->isRoot())
 		return;
@@ -178,7 +178,7 @@ void BaseBfsHandler::proveNodesRetrograde(NodePtr pNode, BaseBfsAlgorithm& baseB
 	proveNodesRetrograde(pParent, baseBfsAlgorithm);
 }
 
-bool BaseBfsHandler::shouldDelayedExpand(NodePtr pNode)
+bool BfsHandler::shouldDelayedExpand(NodePtr pNode)
 {
 	if (pNode->isRoot())
 		return false;

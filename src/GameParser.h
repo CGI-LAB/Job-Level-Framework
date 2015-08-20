@@ -1,5 +1,5 @@
-#ifndef JL_BASEJMSGPARSER_H
-#define JL_BASEJMSGPARSER_H
+#ifndef JL_GAMEPARSER_H
+#define JL_GAMEPARSER_H
 
 #include <string>
 #include <sstream>
@@ -13,7 +13,7 @@ namespace joblevel
 	@author	chaochin
 	@date	2015/7/22
  */
-class BaseJMsgParser
+class GameParser
 {
 public:
 	virtual BaseMovePtr getMove(const std::string& sResult) const = 0;
@@ -28,7 +28,7 @@ protected:
 };
 
 template<typename T>
-inline T BaseJMsgParser::getDataFromResult(const std::string& sTag, const std::string& sResult) const
+inline T GameParser::getDataFromResult(const std::string& sTag, const std::string& sResult) const
 {
 	std::istringstream iss(getStringFromResult(sTag, sResult));
 	T data;

@@ -1,20 +1,20 @@
-#ifndef JL_GOHANDLER_H
-#define JL_GOHANDLER_H
+#ifndef JL_CGIHANDLER_H
+#define JL_CGIHANDLER_H
 
-#include "BaseGameHandler.h"
-#include "GoJMsgParser.h"
+#include "GameHandler.h"
+#include "CgiParser.h"
 
 namespace joblevel
 {
 
-class GoHandler : public BaseGameHandler
+class CgiHandler : public GameHandler
 {
 public:
-	GoHandler();
-	virtual ~GoHandler() {}
+	CgiHandler();
+	virtual ~CgiHandler() {}
 	std::string getAppName() const;
 	std::string getAppVersion() const;
-	std::string getArgument(NodePtr pNode) const;
+	std::string prepareJobCommands(NodePtr pNode) const;
 
 protected:
 	void setBfsPlayerColor(NodePtr pNode) const;
@@ -24,7 +24,7 @@ private:
 	std::string getIgnoreMove(NodePtr pNode) const;
 
 private:
-	GoJMsgParser m_pGoJMsgParser;
+	CgiParser m_pGoJMsgParser;
 };
 
 }

@@ -9,8 +9,8 @@ namespace joblevel
 {
 
 class AlgorithmInterface;
-class BaseBfsHandler;
-class BaseGameHandler;
+class BfsHandler;
+class GameHandler;
 
 class JobLevelManager
 {
@@ -18,8 +18,8 @@ public:
 	static JobLevelManager g_jobLevelManager;
 	friend class JobLevelMiddleware;
 	typedef std::map<std::string, AlgorithmInterface*> AlgorithmMap;
-	typedef std::map<std::string, BaseBfsHandler*> BfsHandlerMap;
-	typedef std::map<std::string, BaseGameHandler*> GameHandlerMap;
+	typedef std::map<std::string, BfsHandler*> BfsHandlerMap;
+	typedef std::map<std::string, GameHandler*> GameHandlerMap;
 
 public:
 	~JobLevelManager();

@@ -1,4 +1,4 @@
-#include "GoHandler.h"
+#include "CgiHandler.h"
 #include <sstream>
 #include <vector>
 #include "GoMove.h"
@@ -8,24 +8,24 @@
 namespace joblevel
 {
 
-GoHandler::GoHandler()
-	: BaseGameHandler(),
+CgiHandler::CgiHandler()
+	: GameHandler(),
 	  m_pGoJMsgParser()
 {
 	setBaseJMsgParser(&m_pGoJMsgParser);
 }
 
-std::string GoHandler::getAppName() const
+std::string CgiHandler::getAppName() const
 {
 	return JobLevelConfigure::g_configure.sGoAppName;
 }
 
-std::string GoHandler::getAppVersion() const
+std::string CgiHandler::getAppVersion() const
 {
 	return JobLevelConfigure::g_configure.sGoAppVersion;
 }
 
-std::string GoHandler::getArgument(NodePtr pNode) const
+std::string CgiHandler::prepareJobCommands(NodePtr pNode) const
 {
 	std::ostringstream oss;
 	oss << "-mode jlmcts -conf_str PATH=" << getPath(pNode);
@@ -37,7 +37,7 @@ std::string GoHandler::getArgument(NodePtr pNode) const
 	return oss.str();
 }
 
-std::string GoHandler::getPath(NodePtr pNode) const
+std::string CgiHandler::getPath(NodePtr pNode) const
 {
 	std::vector<NodePtr> vNodes;
 	NodePtr pTraversedNode = pNode;
@@ -52,7 +52,7 @@ std::string GoHandler::getPath(NodePtr pNode) const
 	return sPath;
 }
 
-std::string GoHandler::getIgnoreMove(NodePtr pNode) const
+std::string CgiHandler::getIgnoreMove(NodePtr pNode) const
 {
 	std::string sIgnoreMove("");
 	NodePtr pChildSibling = pNode->getChild(0);
@@ -61,7 +61,7 @@ std::string GoHandler::getIgnoreMove(NodePtr pNode) const
 	return sIgnoreMove;
 }
 
-void GoHandler::setBfsPlayerColor(NodePtr pNode) const
+void CgiHandler::setBfsPlayerColor(NodePtr pNode) const
 {
 	BfsData::Accessor nodeData(pNode);
 	GoMovePtr pGoMove = dynamic_cast<GoMove*>(pNode->getMove());

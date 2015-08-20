@@ -1,4 +1,4 @@
-#include "Connect6Handler.h"
+#include "Nctu6Handler.h"
 #include <sstream>
 #include <vector>
 #include "Connect6Move.h"
@@ -8,24 +8,24 @@
 namespace joblevel 
 {
 
-Connect6Handler::Connect6Handler()
-	: BaseGameHandler(),
+Nctu6Handler::Nctu6Handler()
+	: GameHandler(),
 	  m_pConnect6JMsgParser()
 {
 	setBaseJMsgParser(&m_pConnect6JMsgParser);
 }
 
-std::string Connect6Handler::getAppName() const
+std::string Nctu6Handler::getAppName() const
 {
 	return JobLevelConfigure::g_configure.sConnect6AppName;
 }
 
-std::string Connect6Handler::getAppVersion() const
+std::string Nctu6Handler::getAppVersion() const
 {
 	return JobLevelConfigure::g_configure.sConnect6AppVersion;
 }
 
-std::string Connect6Handler::getArgument(NodePtr pNode) const
+std::string Nctu6Handler::prepareJobCommands(NodePtr pNode) const
 {
 	std::ostringstream oss;
 	oss << "-playtsumego " << getPath(pNode)
@@ -33,7 +33,7 @@ std::string Connect6Handler::getArgument(NodePtr pNode) const
 	return oss.str();
 }
 
-std::string Connect6Handler::getPath(NodePtr pNode) const
+std::string Nctu6Handler::getPath(NodePtr pNode) const
 {
 	std::vector<NodePtr> vNodes;
 	NodePtr pTraversedNode = pNode;
@@ -48,7 +48,7 @@ std::string Connect6Handler::getPath(NodePtr pNode) const
 	return sPath;
 }
 
-std::string Connect6Handler::getIgnoreMove(NodePtr pNode) const
+std::string Nctu6Handler::getIgnoreMove(NodePtr pNode) const
 {
 	std::string sIgnoreMove("");
 	NodePtr pChildSibling = pNode->getChild(0);
@@ -60,7 +60,7 @@ std::string Connect6Handler::getIgnoreMove(NodePtr pNode) const
 	return sIgnoreMove;
 }
 
-void Connect6Handler::setBfsPlayerColor(NodePtr pNode) const
+void Nctu6Handler::setBfsPlayerColor(NodePtr pNode) const
 {
 	BfsData::Accessor nodeData(pNode);
 	// only need use Go move to get color
@@ -68,7 +68,7 @@ void Connect6Handler::setBfsPlayerColor(NodePtr pNode) const
 	nodeData.setPlayerColor(static_cast<BfsData::PlayerColor>(pMove->getColor()));
 }
 
-bool Connect6Handler::handleDuplicateNode(NodePtr pNode) const
+bool Nctu6Handler::handleDuplicateNode(NodePtr pNode) const
 {
 	BfsData::Accessor nodeData(pNode);
 	nodeData.setStopExpanding(true);

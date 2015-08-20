@@ -1,5 +1,5 @@
-#ifndef JL_BASEBFSHANDLER_H
-#define JL_BASEBFSHANDLER_H
+#ifndef JL_BFSHANDLER_H
+#define JL_BFSHANDLER_H
 
 #include "Node.h"
 #include <string>
@@ -7,8 +7,8 @@
 namespace joblevel
 {
 
-class BaseBfsAlgorithm;
-class BaseJMsgParser;
+class CommonBfJlModules;
+class GameParser;
 /*!
 	@brief	For handling BFS data, including update flag and prove positions.
 			For different BFS algorithm (PNS, UCT, ...), inherit and implement
@@ -16,11 +16,11 @@ class BaseJMsgParser;
 	@author	chaochin
 	@date	2015/7/23
  */
-class BaseBfsHandler
+class BfsHandler
 {
 public:
-	BaseBfsHandler();
-	virtual ~BaseBfsHandler() {}
+	BfsHandler();
+	virtual ~BfsHandler() {}
 	void initializeNode(NodePtr pNode);
 	bool isProvenNode(NodePtr pNode);
 	bool isLastestGenerated(NodePtr pNode);
@@ -31,13 +31,13 @@ public:
 	void restoreUpdateBfsData(NodePtr pChild, NodePtr pLeaf);
 	void updateRunningJobFlag(NodePtr pNode, bool isRunningJob);
 	void updateWithFlagPolicy(NodePtr pNode, bool isFlagged);
-	void proveNodesRetrograde(NodePtr pNode, BaseBfsAlgorithm& baseBfsAlgorithm);
+	void proveNodesRetrograde(NodePtr pNode, CommonBfJlModules& baseBfsAlgorithm);
 	bool shouldDelayedExpand(NodePtr pNode);
 	///////////////////////////////////////////////////
 	// Need to implement in different BFS algorithms //
 	///////////////////////////////////////////////////
 	virtual NodePtr selectBestChild(NodePtr pParent) = 0;
-	virtual bool setBaseJMsgParser(BaseJMsgParser* pBaseJMsgParser) = 0;
+	virtual bool setBaseJMsgParser(GameParser* pBaseJMsgParser) = 0;
 
 protected:
 	virtual void initializeSpecificData(NodePtr pNode) = 0;

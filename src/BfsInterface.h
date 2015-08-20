@@ -26,7 +26,7 @@ public:
 
 	virtual void receiveJobMessage(int iJId, NodePtr pNode, const std::string& sMessage)
 	{
-		NodePtr pNewNode = handleJobResult(iJId, pNode, sMessage);
+		NodePtr pNewNode = handleResult(iJId, pNode, sMessage);
 		if (pNewNode == nullptr)
 			return;
 
@@ -37,7 +37,7 @@ public:
 	virtual NodePtr select() = 0;
 	virtual void preUpdate(NodePtr pNode) = 0;
 	virtual bool dispatch(NodePtr pNode) = 0;
-	virtual NodePtr handleJobResult(int iJId, NodePtr pNode, const std::string& sMessage) = 0;
+	virtual NodePtr handleResult(int iJId, NodePtr pNode, const std::string& sMessage) = 0;
 	virtual void update(NodePtr pNode) = 0;
 	virtual bool isCompleted() = 0;
 	virtual void finalize() = 0;

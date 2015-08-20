@@ -1,13 +1,13 @@
-#ifndef JL_BASEBFSALGORITHM_H
-#define JL_BASEBFSALGORITHM_H
+#ifndef JL_COMMONBFJLMODULES_H
+#define JL_COMMONBFJLMODULES_H
 
 #include "BfsInterface.h"
 
 namespace joblevel
 {
 
-class BaseBfsHandler;
-class BaseGameHandler;
+class BfsHandler;
+class GameHandler;
 /*!
 	@brief	Base BFS algorithm implement BFS interface to maintain the whole
 			JL-BFS algorithm, especially for tree traversal. Delegate BFS 
@@ -15,15 +15,15 @@ class BaseGameHandler;
 	@author	chaochin
 	@date	2015/7/18
  */
-class BaseBfsAlgorithm : public BfsInterface
+class CommonBfJlModules : public BfsInterface
 {
 public:
-	BaseBfsAlgorithm();
-	virtual ~BaseBfsAlgorithm() {};
-	BaseBfsHandler* getBfsHandler() const;
-	void setBfsHandler(BaseBfsHandler* pBfsHandler);
-	BaseGameHandler* getGameHandler() const;
-	void setGameHandler(BaseGameHandler* pGameHandler);
+	CommonBfJlModules();
+	virtual ~CommonBfJlModules() {};
+	BfsHandler* getBfsHandler() const;
+	void setBfsHandler(BfsHandler* pBfsHandler);
+	GameHandler* getGameHandler() const;
+	void setGameHandler(GameHandler* pGameHandler);
 	////////////////////////////////////
 	// implementation of BfsInterface //
 	////////////////////////////////////
@@ -31,7 +31,7 @@ public:
 	virtual NodePtr select();
 	virtual void preUpdate(NodePtr pNode);
 	virtual bool dispatch(NodePtr pNode);
-	virtual NodePtr handleJobResult(int iJId, NodePtr pNode, const std::string& sResult);
+	virtual NodePtr handleResult(int iJId, NodePtr pNode, const std::string& sResult);
 	virtual void update(NodePtr pNode);
 	virtual bool isCompleted();
 	virtual void finalize();
@@ -45,8 +45,8 @@ private:
 	void restorePreUpdate(NodePtr pLeaf);
 
 private:
-	BaseBfsHandler* m_pBfsHandler;
-	BaseGameHandler* m_pGameHandler;
+	BfsHandler* m_pBfsHandler;
+	GameHandler* m_pGameHandler;
 	int m_nDoingJobs;
 	int m_nTotalJobs;
 };

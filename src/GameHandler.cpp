@@ -1,28 +1,28 @@
-#include "BaseGameHandler.h"
+#include "GameHandler.h"
 #include "BfsData.h"
-#include "BaseJMsgParser.h"
+#include "GameParser.h"
 #include <cassert>
 
 namespace joblevel
 {
 
-BaseGameHandler::BaseGameHandler()
+GameHandler::GameHandler()
 	: m_pBaseJMsgParser(NULL)
 {
 }
 
-void BaseGameHandler::setBaseJMsgParser(BaseJMsgParser* pBaseJMsgParser)
+void GameHandler::setBaseJMsgParser(GameParser* pBaseJMsgParser)
 {
 	m_pBaseJMsgParser = pBaseJMsgParser;
 }
 
-BaseJMsgParser* BaseGameHandler::getBaseJMsgParser() const
+GameParser* GameHandler::getBaseJMsgParser() const
 {
 	assert(m_pBaseJMsgParser != NULL);
 	return m_pBaseJMsgParser;
 }
 
-void BaseGameHandler::initializeNode(NodePtr pNode) const
+void GameHandler::initializeNode(NodePtr pNode) const
 {
 	BfsData::Accessor nodeData(pNode);
 	if (pNode->isRoot())
@@ -31,7 +31,7 @@ void BaseGameHandler::initializeNode(NodePtr pNode) const
 		setBfsPlayerColor(pNode);
 }
 
-bool BaseGameHandler::isNodeAlreadyExist(NodePtr pNode, const std::string& sResult) const
+bool GameHandler::isNodeAlreadyExist(NodePtr pNode, const std::string& sResult) const
 {
 	assert(m_pBaseJMsgParser != NULL);
 	BaseMovePtr pMove = m_pBaseJMsgParser->getMove(sResult);
@@ -44,14 +44,14 @@ bool BaseGameHandler::isNodeAlreadyExist(NodePtr pNode, const std::string& sResu
 	}
 }
 
-NodePtr BaseGameHandler::generateNode(NodePtr pNode, const std::string& sResult) const
+NodePtr GameHandler::generateNode(NodePtr pNode, const std::string& sResult) const
 {
 	assert(m_pBaseJMsgParser != NULL);
 	BaseMovePtr pMove = m_pBaseJMsgParser->getMove(sResult);
 	return pNode->generateChild(pMove);
 }
 
-void BaseGameHandler::setupGameData(NodePtr pNode, const std::string& sResult) const
+void GameHandler::setupGameData(NodePtr pNode, const std::string& sResult) const
 {
 	setBfsPlayerColor(pNode);
 	BfsData::Accessor nodeData(pNode);
@@ -67,7 +67,7 @@ void BaseGameHandler::setupGameData(NodePtr pNode, const std::string& sResult) c
 	}
 }
 
-bool BaseGameHandler::handleDuplicateNode(NodePtr pNode) const
+bool GameHandler::handleDuplicateNode(NodePtr pNode) const
 {
 	return false;
 }

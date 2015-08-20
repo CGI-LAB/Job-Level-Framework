@@ -1,20 +1,20 @@
-#ifndef JL_CONNECT6HANDLER_H
-#define JL_CONNECT6HANDLER_H
+#ifndef JL_NCTU6HANDLER_H
+#define JL_NCTU6HANDLER_H
 
-#include "BaseGameHandler.h"
-#include "Connect6JMsgParser.h"
+#include "GameHandler.h"
+#include "Nctu6Parser.h"
 
 namespace joblevel 
 {
 
-class Connect6Handler : public BaseGameHandler
+class Nctu6Handler : public GameHandler
 {
 public:
-	Connect6Handler();
-	virtual ~Connect6Handler() {}
+	Nctu6Handler();
+	virtual ~Nctu6Handler() {}
 	std::string getAppName() const;
 	std::string getAppVersion() const;
-	std::string getArgument(NodePtr pNode) const;
+	std::string prepareJobCommands(NodePtr pNode) const;
 	bool handleDuplicateNode(NodePtr pNode) const;
 
 protected:
@@ -25,7 +25,7 @@ private:
 	std::string getIgnoreMove(NodePtr pNode) const;
 
 private:
-	Connect6JMsgParser m_pConnect6JMsgParser;
+	Nctu6Parser m_pConnect6JMsgParser;
 };
 
 } // joblevel

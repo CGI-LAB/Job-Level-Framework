@@ -1,5 +1,5 @@
-#ifndef JL_BASEGAMEHANDLER_H
-#define JL_BASEGAMEHANDLER_H
+#ifndef JL_GAMEHANDLER_H
+#define JL_GAMEHANDLER_H
 
 #include <string>
 #include <sstream>
@@ -9,7 +9,7 @@
 namespace joblevel
 {
 
-class BaseJMsgParser;
+class GameParser;
 /*!
 	@brief	Base game handler used in base BFS algorithm, mainly for expanding
 			new node and setting up data from the result. Futhermore, implement
@@ -17,19 +17,19 @@ class BaseJMsgParser;
 	@author	chaochin
 	@date	2015/7/22
  */
-class BaseGameHandler
+class GameHandler
 {
 public:
-	BaseGameHandler();
-	virtual ~BaseGameHandler() {}
-	BaseJMsgParser* getBaseJMsgParser() const;
+	GameHandler();
+	virtual ~GameHandler() {}
+	GameParser* getBaseJMsgParser() const;
 	virtual void initializeNode(NodePtr pNode) const;
 	/////////////////////////////////
 	// Functions need to implement //
 	/////////////////////////////////
 	virtual std::string getAppName() const = 0;
 	virtual std::string getAppVersion() const = 0;
-	virtual std::string getArgument(NodePtr pNode) const = 0;
+	virtual std::string prepareJobCommands(NodePtr pNode) const = 0;
 
 	bool isNodeAlreadyExist(NodePtr pNode, const std::string& sResult) const;
 	NodePtr generateNode(NodePtr pNode, const std::string& sResult) const;
@@ -40,11 +40,11 @@ public:
 	virtual bool handleDuplicateNode(NodePtr pNode) const;
 
 protected:
-	void setBaseJMsgParser(BaseJMsgParser* pBaseJMsgParser);
+	void setBaseJMsgParser(GameParser* pBaseJMsgParser);
 	virtual void setBfsPlayerColor(NodePtr pNode) const = 0;
 
 private:
-	BaseJMsgParser* m_pBaseJMsgParser;
+	GameParser* m_pBaseJMsgParser;
 };
 
 }
