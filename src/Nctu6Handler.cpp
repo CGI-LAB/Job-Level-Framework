@@ -9,10 +9,13 @@ namespace joblevel
 {
 
 Nctu6Handler::Nctu6Handler()
-	: GameHandler(),
-	  m_pConnect6JMsgParser()
+	: GameHandler()
 {
-	setBaseJMsgParser(&m_pConnect6JMsgParser);
+}
+
+GameParser* Nctu6Handler::makeGameParser(const std::string& sResult) const
+{
+	return new Nctu6Parser(sResult);
 }
 
 std::string Nctu6Handler::getAppName() const

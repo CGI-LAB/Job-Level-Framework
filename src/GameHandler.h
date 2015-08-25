@@ -22,7 +22,7 @@ class GameHandler
 public:
 	GameHandler();
 	virtual ~GameHandler() {}
-	GameParser* getBaseJMsgParser() const;
+	virtual GameParser* makeGameParser(const std::string& sResult) const = 0;
 	virtual void initializeNode(NodePtr pNode) const;
 	/////////////////////////////////
 	// Functions need to implement //
@@ -31,20 +31,16 @@ public:
 	virtual std::string getAppVersion() const = 0;
 	virtual std::string prepareJobCommands(NodePtr pNode) const = 0;
 
-	bool isNodeAlreadyExist(NodePtr pNode, const std::string& sResult) const;
-	NodePtr generateNode(NodePtr pNode, const std::string& sResult) const;
+	bool isNodeAlreadyExist(NodePtr pNode, GameParser* pGameParser) const;
+	NodePtr generateNode(NodePtr pNode, GameParser* pGameParser) const;
 	////////////////////////////////////////////////
 	// Some pre-defined behavior, can be override //
 	////////////////////////////////////////////////
-	virtual void setupGameData(NodePtr pNode, const std::string& sResult) const;
+	virtual void setupGameData(NodePtr pNode, GameParser* pGameParser) const;
 	virtual bool handleDuplicateNode(NodePtr pNode) const;
 
 protected:
-	void setBaseJMsgParser(GameParser* pBaseJMsgParser);
 	virtual void setBfsPlayerColor(NodePtr pNode) const = 0;
-
-private:
-	GameParser* m_pBaseJMsgParser;
 };
 
 }

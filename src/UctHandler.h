@@ -6,25 +6,21 @@
 namespace joblevel
 {
 
-class UctParserInterface;
+class UctRetriever;
 
 class UctHandler : public BfsHandler
 {
 public:
 	UctHandler();
 	virtual ~UctHandler() {}
-	NodePtr selectBestChild(NodePtr pParent);
-	bool setBaseJMsgParser(GameParser* pBaseJMsgParser);
+	virtual NodePtr selectBestChild(NodePtr pParent);
 
 protected:
-	void initializeSpecificData(NodePtr pNode);
-	void setupSpecificData(NodePtr pNode, const std::string& sResult);
+	virtual void initializeSpecificData(NodePtr pNode);
+	virtual void setupSpecificData(NodePtr pNode, BfsRetriever* pBfsRetriever);
 	virtual void updateSpecificData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate);
-	void restoreUpdateSpecificData(NodePtr pChild, NodePtr pLeaf);
+	virtual void restoreUpdateSpecificData(NodePtr pChild, NodePtr pLeaf);
 	void updateUcbScore(NodePtr pParent);
-
-private:
-	UctParserInterface* m_pUctParserInterface;
 };
 
 }

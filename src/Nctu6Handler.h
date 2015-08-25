@@ -12,6 +12,7 @@ class Nctu6Handler : public GameHandler
 public:
 	Nctu6Handler();
 	virtual ~Nctu6Handler() {}
+	virtual GameParser* makeGameParser(const std::string& sResult) const;
 	std::string getAppName() const;
 	std::string getAppVersion() const;
 	std::string prepareJobCommands(NodePtr pNode) const;
@@ -23,9 +24,6 @@ protected:
 private:
 	std::string getPath(NodePtr pNode) const;
 	std::string getIgnoreMove(NodePtr pNode) const;
-
-private:
-	Nctu6Parser m_pConnect6JMsgParser;
 };
 
 } // joblevel

@@ -9,10 +9,13 @@ namespace joblevel
 {
 
 CgiHandler::CgiHandler()
-	: GameHandler(),
-	  m_pGoJMsgParser()
+	: GameHandler()
 {
-	setBaseJMsgParser(&m_pGoJMsgParser);
+}
+
+GameParser* CgiHandler::makeGameParser(const std::string& sResult) const
+{
+	return new CgiParser(sResult);
 }
 
 std::string CgiHandler::getAppName() const

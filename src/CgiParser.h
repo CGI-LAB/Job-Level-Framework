@@ -2,20 +2,21 @@
 #define JL_CGIPARSER_H
 
 #include "GameParser.h"
-#include "UctParserInterface.h"
 
 namespace joblevel
 {
 
 class CgiParser
-	: public GameParser,
-	  public UctParserInterface
+	: public GameParser
 {
 public:
-	BaseMovePtr getMove(const std::string& sResult) const;
-	BfsData::WinningStatus getWinningStatus(const std::string& sResult) const;
-	bool getStopExpanding(const std::string& sResult) const;
-	double getWinRate(const std::string& sResult) const;
+	CgiParser(const std::string& sResult);
+	virtual ~CgiParser() {}
+	virtual BaseMovePtr getMove() const;
+	std::string getColor() const;
+	int getCWin() const;
+	bool getLast() const;
+	double getWinRate() const;
 };
 
 }

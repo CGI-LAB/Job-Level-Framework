@@ -8,7 +8,7 @@ namespace joblevel
 {
 
 class CommonBfJlModules;
-class GameParser;
+class BfsRetriever;
 /*!
 	@brief	For handling BFS data, including update flag and prove positions.
 			For different BFS algorithm (PNS, UCT, ...), inherit and implement
@@ -26,7 +26,7 @@ public:
 	bool isLastestGenerated(NodePtr pNode);
 	bool isRunningJob(NodePtr pNode);
 	bool isFlagged(NodePtr pNode);
-	void setupBfsData(NodePtr pNode, const std::string& sResult);
+	void setupBfsData(NodePtr pNode, BfsRetriever* pBfsRetriever);
 	void updateBfsData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate);
 	void restoreUpdateBfsData(NodePtr pChild, NodePtr pLeaf);
 	void updateRunningJobFlag(NodePtr pNode, bool isRunningJob);
@@ -37,11 +37,10 @@ public:
 	// Need to implement in different BFS algorithms //
 	///////////////////////////////////////////////////
 	virtual NodePtr selectBestChild(NodePtr pParent) = 0;
-	virtual bool setBaseJMsgParser(GameParser* pBaseJMsgParser) = 0;
 
 protected:
 	virtual void initializeSpecificData(NodePtr pNode) = 0;
-	virtual void setupSpecificData(NodePtr pNode, const std::string& sResult) = 0;
+	virtual void setupSpecificData(NodePtr pNode, BfsRetriever* pBfsRetriever) = 0;
 	virtual void updateSpecificData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate) = 0;
 	virtual void restoreUpdateSpecificData(NodePtr pChild, NodePtr pLeaf) = 0;
 

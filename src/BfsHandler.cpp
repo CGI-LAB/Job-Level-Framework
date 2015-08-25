@@ -3,6 +3,7 @@
 #include "BfsData.h"
 #include "JobLevelConfigure.h"
 #include "CommonBfJlModules.h"
+#include "BfsRetriever.h"
 
 namespace joblevel
 {
@@ -42,12 +43,22 @@ bool BfsHandler::isFlagged(NodePtr pNode)
 	return nodeData.isFlagged();
 }
 
-void BfsHandler::setupBfsData(NodePtr pNode, const std::string& sResult)
+void BfsHandler::setupBfsData(NodePtr pNode, BfsRetriever* pBfsRetriever)
 {
-	BfsData::Accessor nodeData(pNode);
 	assert(pNode->hasParent());
+	BfsData::Accessor nodeData(pNode);
+	BfsData::Accessor parentData(pNode->getParent());
 	nodeData.setSequenceOfGeneration(pNode->getParent()->getChildrenSize());
-	setupSpecificData(pNode, sResult);
+	nodeData.setWinningStatus(pBfsRetriever->getWinningStatus());
+	if ((nodeData.getWinningStatus() == BfsData::BLACK_WIN 
+		&& nodeData.getPlayerColor() == BfsData::PLAYER_WHITE)
+		|| (nodeData.getWinningStatus() == BfsData::WHITE_WIN 
+		&& nodeData.getPlayerColor() == BfsData::PLAYER_BLACK)) {
+		parentData.setStopExpanding(true);
+	} else {
+		parentData.setStopExpanding(pBfsRetriever->getStopExpanding());
+	}
+	setupSpecificData(pNode, pBfsRetriever);
 }
 
 void BfsHandler::updateBfsData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate)

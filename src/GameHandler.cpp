@@ -7,19 +7,7 @@ namespace joblevel
 {
 
 GameHandler::GameHandler()
-	: m_pBaseJMsgParser(NULL)
 {
-}
-
-void GameHandler::setBaseJMsgParser(GameParser* pBaseJMsgParser)
-{
-	m_pBaseJMsgParser = pBaseJMsgParser;
-}
-
-GameParser* GameHandler::getBaseJMsgParser() const
-{
-	assert(m_pBaseJMsgParser != NULL);
-	return m_pBaseJMsgParser;
 }
 
 void GameHandler::initializeNode(NodePtr pNode) const
@@ -31,10 +19,9 @@ void GameHandler::initializeNode(NodePtr pNode) const
 		setBfsPlayerColor(pNode);
 }
 
-bool GameHandler::isNodeAlreadyExist(NodePtr pNode, const std::string& sResult) const
+bool GameHandler::isNodeAlreadyExist(NodePtr pNode, GameParser* pGameParser) const
 {
-	assert(m_pBaseJMsgParser != NULL);
-	BaseMovePtr pMove = m_pBaseJMsgParser->getMove(sResult);
+	BaseMovePtr pMove = pGameParser->getMove();
 	NodePtr pChild = pNode->getChildWithMove(pMove);
 	if (pChild != nullptr) {
 		delete pMove;
@@ -44,27 +31,16 @@ bool GameHandler::isNodeAlreadyExist(NodePtr pNode, const std::string& sResult) 
 	}
 }
 
-NodePtr GameHandler::generateNode(NodePtr pNode, const std::string& sResult) const
+NodePtr GameHandler::generateNode(NodePtr pNode, GameParser* pGameParser) const
 {
-	assert(m_pBaseJMsgParser != NULL);
-	BaseMovePtr pMove = m_pBaseJMsgParser->getMove(sResult);
-	return pNode->generateChild(pMove);
+	BaseMovePtr pMove = pGameParser->getMove();
+	NodePtr pChild = pNode->generateChild(pMove);
+	setBfsPlayerColor(pChild);
+	return pChild;
 }
 
-void GameHandler::setupGameData(NodePtr pNode, const std::string& sResult) const
+void GameHandler::setupGameData(NodePtr pNode, GameParser* pGameParser) const
 {
-	setBfsPlayerColor(pNode);
-	BfsData::Accessor nodeData(pNode);
-	BfsData::Accessor parentData(pNode->getParent());
-	nodeData.setWinningStatus(m_pBaseJMsgParser->getWinningStatus(sResult));
-	if ((nodeData.getWinningStatus() == BfsData::BLACK_WIN 
-		&& nodeData.getPlayerColor() == BfsData::PLAYER_WHITE)
-		|| (nodeData.getWinningStatus() == BfsData::WHITE_WIN 
-		&& nodeData.getPlayerColor() == BfsData::PLAYER_BLACK)) {
-		parentData.setStopExpanding(true);
-	} else {
-		parentData.setStopExpanding(m_pBaseJMsgParser->getStopExpanding(sResult));
-	}
 }
 
 bool GameHandler::handleDuplicateNode(NodePtr pNode) const

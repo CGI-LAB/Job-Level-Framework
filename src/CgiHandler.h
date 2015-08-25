@@ -12,6 +12,7 @@ class CgiHandler : public GameHandler
 public:
 	CgiHandler();
 	virtual ~CgiHandler() {}
+	virtual GameParser* makeGameParser(const std::string& sResult) const;
 	std::string getAppName() const;
 	std::string getAppVersion() const;
 	std::string prepareJobCommands(NodePtr pNode) const;
@@ -22,9 +23,6 @@ protected:
 private:
 	std::string getPath(NodePtr pNode) const;
 	std::string getIgnoreMove(NodePtr pNode) const;
-
-private:
-	CgiParser m_pGoJMsgParser;
 };
 
 }

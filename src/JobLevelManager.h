@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <utility>
 #include "JobLevelMiddleware.h"
 
 namespace joblevel
@@ -11,6 +12,7 @@ namespace joblevel
 class AlgorithmInterface;
 class BfsHandler;
 class GameHandler;
+class Integrator;
 
 class JobLevelManager
 {
@@ -20,6 +22,7 @@ public:
 	typedef std::map<std::string, AlgorithmInterface*> AlgorithmMap;
 	typedef std::map<std::string, BfsHandler*> BfsHandlerMap;
 	typedef std::map<std::string, GameHandler*> GameHandlerMap;
+	typedef std::map<std::pair<std::string, std::string>, Integrator*> IntegratorMap;
 
 public:
 	~JobLevelManager();
@@ -35,6 +38,7 @@ private:
 	AlgorithmMap m_algorithms;
 	BfsHandlerMap m_bfsHandlers;
 	GameHandlerMap m_gameHandlers;
+	IntegratorMap m_integrators;
 };
 
 }

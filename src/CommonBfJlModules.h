@@ -8,6 +8,7 @@ namespace joblevel
 
 class BfsHandler;
 class GameHandler;
+class Integrator;
 /*!
 	@brief	Base BFS algorithm implement BFS interface to maintain the whole
 			JL-BFS algorithm, especially for tree traversal. Delegate BFS 
@@ -24,6 +25,8 @@ public:
 	void setBfsHandler(BfsHandler* pBfsHandler);
 	GameHandler* getGameHandler() const;
 	void setGameHandler(GameHandler* pGameHandler);
+	Integrator* getIntegrator() const;
+	void setIntegrator(Integrator* pIntegrator);
 	////////////////////////////////////
 	// implementation of BfsInterface //
 	////////////////////////////////////
@@ -47,6 +50,7 @@ private:
 private:
 	BfsHandler* m_pBfsHandler;
 	GameHandler* m_pGameHandler;
+	Integrator* m_pIntegrator;
 	int m_nDoingJobs;
 	int m_nTotalJobs;
 };

@@ -18,12 +18,12 @@ ${READLINE_INCLUDE_DIR})
 set(SRCS Application.cpp BfsData.cpp Invoker.cpp SearchTree.cpp
 Arguments.cpp BrokerAgent.cpp JobLevelCommands.cpp SearchTreeCommands.cpp
 AsyncSocket.cpp CommandsEngine.cpp JobLevelConfigure.cpp UctData.cpp
-BaseBfsAlgorithm.cpp ConfigureLoader.cpp JobLevelMiddleware.cpp UctHandler.cpp
-BaseBfsHandler.cpp Connect6Move.cpp Node.cpp main.cpp BaseData.cpp 
-GoHandler.cpp Point.cpp strops.cpp BaseGameHandler.cpp GoMove.cpp ProgramOption.cpp
-SgfSerializer.cpp BaseJMsgParser.cpp GoJMsgParser.cpp JobLevelManager.cpp
-SearchTreeBrowser.cpp Connect6Handler.cpp Connect6JMsgParser.cpp
-MiniMaxHandler.cpp)
+CommonBfJlModules.cpp ConfigureLoader.cpp JobLevelMiddleware.cpp UctHandler.cpp
+BfsHandler.cpp Connect6Move.cpp Node.cpp main.cpp BaseData.cpp 
+CgiHandler.cpp Point.cpp strops.cpp GameHandler.cpp GoMove.cpp ProgramOption.cpp
+SgfSerializer.cpp GameParser.cpp CgiParser.cpp JobLevelManager.cpp
+SearchTreeBrowser.cpp Nctu6Handler.cpp Nctu6Parser.cpp
+MiniMaxHandler.cpp CgiUctRetriever.cpp Nctu6UctRetriever.cpp)
 
 add_executable(JLApplication ${SRCS})
 

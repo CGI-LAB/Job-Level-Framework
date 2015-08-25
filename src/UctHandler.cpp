@@ -1,27 +1,17 @@
 #include "UctHandler.h"
 #include <cmath>
 #include <cassert>
-#include "UctParserInterface.h"
+#include "UctRetriever.h"
 #include "UctData.h"
 #include "BfsData.h"
 #include "JobLevelConfigure.h"
-#include "GameParser.h"
 
 namespace joblevel
 {
 
 UctHandler::UctHandler()
-	: BfsHandler(),
-	  m_pUctParserInterface(NULL)
+	: BfsHandler()
 {
-}
-
-bool UctHandler::setBaseJMsgParser(GameParser* pBaseJMsgParser)
-{
-	m_pUctParserInterface = dynamic_cast<UctParserInterface*>(pBaseJMsgParser);
-	if (m_pUctParserInterface == NULL)
-		return false;
-	return true;
 }
 
 NodePtr UctHandler::selectBestChild(NodePtr pParent)
@@ -48,12 +38,13 @@ void UctHandler::initializeSpecificData(NodePtr pNode)
 	UctData::Accessor nodeData(pNode);
 }
 
-void UctHandler::setupSpecificData(NodePtr pNode, const std::string& sResult)
+void UctHandler::setupSpecificData(NodePtr pNode, BfsRetriever* pBfsRetriever)
 {
+	UctRetriever* pUctRetriever = dynamic_cast<UctRetriever*>(pBfsRetriever);
+	assert(pUctRetriever != nullptr);
 	UctData::Accessor nodeData(pNode);
 	nodeData.setMoveCount(1);
-	assert(m_pUctParserInterface != NULL);
-	nodeData.setWinRate(m_pUctParserInterface->getWinRate(sResult));
+	nodeData.setWinRate(pUctRetriever->getWinRate());
 }
 
 void UctHandler::updateSpecificData(NodePtr pChild, NodePtr pLeaf, bool isPreUpdate)

@@ -6,14 +6,18 @@
 #include "JobLevelConfigure.h"
 #include "BfsHandler.h"
 #include "GameHandler.h"
+#include "Integrator.h"
+#include "GameParser.h"
+#include "BfsRetriever.h"
 
 namespace joblevel
 {
 
 CommonBfJlModules::CommonBfJlModules()
 	: BfsInterface(),
-	  m_pBfsHandler(NULL),
-	  m_pGameHandler(NULL),
+	  m_pBfsHandler(nullptr),
+	  m_pGameHandler(nullptr),
+	  m_pIntegrator(nullptr),
 	  m_nDoingJobs(0),
 	  m_nTotalJobs(0)
 {
@@ -26,7 +30,6 @@ CommonBfJlModules::CommonBfJlModules()
 
 BfsHandler* CommonBfJlModules::getBfsHandler() const
 {
-	assert(m_pBfsHandler != NULL);
 	return m_pBfsHandler;
 }
 
@@ -45,10 +48,20 @@ void CommonBfJlModules::setGameHandler(GameHandler* pGameHandler)
 	m_pGameHandler = pGameHandler;
 }
 
+Integrator* CommonBfJlModules::getIntegrator() const
+{
+	return m_pIntegrator;
+}
+
+void CommonBfJlModules::setIntegrator(Integrator* pIntegrator)
+{
+	m_pIntegrator = pIntegrator;
+}
+
 bool CommonBfJlModules::initialize(NodePtr pNode)
 {
-	assert(m_pBfsHandler != NULL);
-	assert(m_pGameHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
+	assert(m_pGameHandler != nullptr);
 	m_nTotalJobs = 0;
 	setJobLevelRoot(pNode);
 	std::vector<NodePtr> vNodes;
@@ -70,7 +83,7 @@ NodePtr CommonBfJlModules::select()
 		return nullptr;
 
 	NodePtr pSelectedNode = getJobLevelRoot();
-	assert(m_pBfsHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
 	if (m_pBfsHandler->isProvenNode(pSelectedNode))
 		return nullptr;
 
@@ -96,8 +109,8 @@ void CommonBfJlModules::preUpdate(NodePtr pNode)
 
 bool CommonBfJlModules::dispatch(NodePtr pNode)
 {
-	assert(m_pBfsHandler != NULL);
-	assert(m_pGameHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
+	assert(m_pGameHandler != nullptr);
 	std::ostringstream oss;
 	if (m_pBfsHandler->isRunningJob(pNode)) {
 		oss << "Error : the node to dispathch is running job" << std::endl;
@@ -135,10 +148,12 @@ bool CommonBfJlModules::dispatch(NodePtr pNode)
 NodePtr CommonBfJlModules::handleResult(int iJId, NodePtr pNode, const std::string& sResult)
 {
 	m_nDoingJobs--;
-	assert(m_pBfsHandler != NULL);
-	assert(m_pGameHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
+	assert(m_pGameHandler != nullptr);
+	assert(m_pIntegrator != nullptr);
 	std::ostringstream oss;
-	if (m_pGameHandler->isNodeAlreadyExist(pNode, sResult)) {
+	GameParser* pGameParser = m_pGameHandler->makeGameParser(sResult);
+	if (m_pGameHandler->isNodeAlreadyExist(pNode, pGameParser)) {
 		if (m_pGameHandler->handleDuplicateNode(pNode)) {
 			oss << std::endl << "Handle duplicate node: Set StopExpanding true" << std::endl << "Receive job ID " << iJId 
 				<< ": " << sResult << std::endl;
@@ -152,7 +167,7 @@ NodePtr CommonBfJlModules::handleResult(int iJId, NodePtr pNode, const std::stri
 		restorePreUpdate(pNode);
 		return nullptr;
 	}
-	NodePtr pNewNode = m_pGameHandler->generateNode(pNode, sResult);
+	NodePtr pNewNode = m_pGameHandler->generateNode(pNode, pGameParser);
 
 	oss.str("");
 	oss << "Receive job ID " << iJId << ": " << sResult << std::endl;
@@ -164,8 +179,12 @@ NodePtr CommonBfJlModules::handleResult(int iJId, NodePtr pNode, const std::stri
 		fout.close();
 	}
 
-	m_pBfsHandler->setupBfsData(pNewNode, sResult);
-	m_pGameHandler->setupGameData(pNewNode, sResult);
+	BfsRetriever* pBfsRetriever = m_pIntegrator->makeRetriever(pGameParser);
+	m_pBfsHandler->setupBfsData(pNewNode, pBfsRetriever);
+	m_pGameHandler->setupGameData(pNewNode, pGameParser);
+
+	delete pGameParser;
+	delete pBfsRetriever;
 
 	return pNewNode;
 }
@@ -178,7 +197,7 @@ void CommonBfJlModules::update(NodePtr pNode)
 bool CommonBfJlModules::isCompleted()
 {
 	// If root is proved or total jobs hit node limit, algorithm is completed.
-	assert(m_pBfsHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
 	if (m_pBfsHandler->isProvenNode(getJobLevelRoot()) ||
 		m_nTotalJobs >= JobLevelConfigure::g_configure.iJobLimit)
 		return true;
@@ -199,7 +218,7 @@ bool CommonBfJlModules::shouldSelect()
 
 void CommonBfJlModules::update(NodePtr pLeaf, bool isPreUpdate)
 {
-	assert(m_pBfsHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
 	NodePtr pTraversedChild = pLeaf;
 	while (pTraversedChild != nullptr) {
 		m_pBfsHandler->updateBfsData(pTraversedChild, pLeaf, isPreUpdate);
@@ -219,7 +238,7 @@ void CommonBfJlModules::generatePostponedSibling(NodePtr pNode)
 
 bool CommonBfJlModules::delayedExpand(NodePtr pNode)
 {
-	assert(m_pBfsHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
 	if (pNode->isRoot())
 		return false;
 	NodePtr pParent = pNode->getParent();
@@ -235,7 +254,7 @@ bool CommonBfJlModules::delayedExpand(NodePtr pNode)
 
 void CommonBfJlModules::restorePreUpdate(NodePtr pLeaf)
 {
-	assert(m_pBfsHandler != NULL);
+	assert(m_pBfsHandler != nullptr);
 	NodePtr pTraversedChild = pLeaf;
 	while (pTraversedChild != nullptr) {
 		m_pBfsHandler->restoreUpdateBfsData(pTraversedChild, pLeaf);

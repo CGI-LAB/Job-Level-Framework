@@ -6,6 +6,11 @@
 #include "MiniMaxHandler.h"
 #include "CgiHandler.h"
 #include "Nctu6Handler.h"
+#include "SpecificIntegrator.h"
+#include "CgiUctRetriever.h"
+#include "CgiParser.h"
+#include "Nctu6UctRetriever.h"
+#include "Nctu6Parser.h"
 
 namespace joblevel
 {
@@ -25,6 +30,16 @@ void JobLevelManager::setupMap()
 	// register Game handlers
 	m_gameHandlers[cf.sGoGameType] = new CgiHandler;
 	m_gameHandlers[cf.sConnect6GameType] = new Nctu6Handler;
+
+	// register integrator
+	m_integrators[std::make_pair(cf.sGoGameType, cf.sUctHandlerType)]
+		= new SpecificIntegrator<CgiUctRetriever, CgiParser>;
+	m_integrators[std::make_pair(cf.sConnect6GameType, cf.sUctHandlerType)]
+		= new SpecificIntegrator<Nctu6UctRetriever, Nctu6Parser>;
+	m_integrators[std::make_pair(cf.sGoGameType, cf.sMiniMaxHandlerType)]
+		= new SpecificIntegrator<CgiUctRetriever, CgiParser>;
+	m_integrators[std::make_pair(cf.sConnect6GameType, cf.sMiniMaxHandlerType)]
+		= new SpecificIntegrator<Nctu6UctRetriever, Nctu6Parser>;
 }
 
 AlgorithmInterface* JobLevelManager::getAlgorithm()
@@ -46,15 +61,12 @@ AlgorithmInterface* JobLevelManager::getAlgorithm()
 			std::cerr << "Can't find Game handler: " << sGameType << std::endl;
 			return NULL;
 		}
-		if (m_bfsHandlers[sBfsHandlerType]->setBaseJMsgParser(
-			m_gameHandlers[sGameType]->getBaseJMsgParser()) == false) {
-			std::cerr << sGameType << " doesn't support " << sBfsHandlerType << std::endl;
-			return NULL;
-		}
 		dynamic_cast<CommonBfJlModules*>(m_algorithms[sAlgorithmType])
 			->setBfsHandler(m_bfsHandlers[sBfsHandlerType]);
 		dynamic_cast<CommonBfJlModules*>(m_algorithms[sAlgorithmType])
 			->setGameHandler(m_gameHandlers[sGameType]);
+		dynamic_cast<CommonBfJlModules*>(m_algorithms[sAlgorithmType])
+			->setIntegrator(m_integrators[std::make_pair(sGameType, sBfsHandlerType)]);
 	}
 
 	return m_algorithms[sAlgorithmType];

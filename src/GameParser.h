@@ -16,21 +16,23 @@ namespace joblevel
 class GameParser
 {
 public:
-	virtual BaseMovePtr getMove(const std::string& sResult) const = 0;
-	virtual BfsData::WinningStatus getWinningStatus(const std::string& sResult) const = 0;
-	virtual bool getStopExpanding(const std::string& sResult) const = 0;
+	GameParser(const std::string& sResult);
+	virtual ~GameParser() {}
+	virtual BaseMovePtr getMove() const = 0;
 
 protected:
-	std::string getStringFromResult(const std::string& sTag, 
-		const std::string& sResult) const;
+	std::string getStringFromResult(const std::string& sTag) const;
 	template<typename T>
-	T getDataFromResult(const std::string& sTag, const std::string& sResult) const;
+	T getDataFromResult(const std::string& sTag) const;
+
+protected:
+	std::string m_sResult;
 };
 
 template<typename T>
-inline T GameParser::getDataFromResult(const std::string& sTag, const std::string& sResult) const
+inline T GameParser::getDataFromResult(const std::string& sTag) const
 {
-	std::istringstream iss(getStringFromResult(sTag, sResult));
+	std::istringstream iss(getStringFromResult(sTag));
 	T data;
 	iss >> data;
 	return data;

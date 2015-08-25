@@ -4,36 +4,38 @@
 namespace joblevel
 {
 
-BaseMovePtr CgiParser::getMove(const std::string& sResult) const
+CgiParser::CgiParser(const std::string& sResult) : GameParser(sResult) 
 {
-	GoMove::PlayerColor color = (sResult[0] == 'B')?GoMove::PLAYER_BLACK:GoMove::PLAYER_WHITE;
-	Point point(static_cast<int>(sResult[2] - 'A'),
-				static_cast<int>(sResult[3] - 'A'));
+}
+
+BaseMovePtr CgiParser::getMove() const
+{
+	GoMove::PlayerColor color = (m_sResult[0] == 'B')?GoMove::PLAYER_BLACK:GoMove::PLAYER_WHITE;
+	Point point(static_cast<int>(m_sResult[2] - 'A'),
+				static_cast<int>(m_sResult[3] - 'A'));
 	GoMovePtr pGoMove = GoMove::AllocMove(color, point);
 	return pGoMove;
 }
 
-BfsData::WinningStatus CgiParser::getWinningStatus(
-	const std::string& sResult) const
+std::string CgiParser::getColor() const
+{
+	return m_sResult.substr(0, 1);
+}
+
+int CgiParser::getCWin() const
 {
 	// CWIN: 0 is UNKNOWN, 1 is player win, 2 is opponent win
-	int iCWinValue = getDataFromResult<int>("CWIN", sResult);
-	if (iCWinValue == 0)
-		return BfsData::UNKNOWN;
-	else if ((sResult[0] == 'B' && iCWinValue == 1) || (sResult[0] == 'W' && iCWinValue == 2))
-		return BfsData::BLACK_WIN;
-	else
-		return BfsData::WHITE_WIN;
+	return getDataFromResult<int>("CWIN");
 }
 
-bool CgiParser::getStopExpanding(const std::string& sResult) const
+bool CgiParser::getLast() const
 {
-	return static_cast<bool>(getDataFromResult<int>("LAST", sResult));
+	return static_cast<bool>(getDataFromResult<int>("LAST"));
 }
 
-double CgiParser::getWinRate(const std::string& sResult) const
+double CgiParser::getWinRate() const
 {
-	return getDataFromResult<double>("WR", sResult);
+	return getDataFromResult<double>("WR");
 }
 
 }
